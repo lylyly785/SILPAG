@@ -4,6 +4,6 @@ This python package implements SILPAG (Spatially-informed Identification and Loc
 ## Framework of SILPAG
 <br/>
 <div align=center>
-<img src="/docs/images/overview.png" width="90%">
+<img src="/docs/images/Overview.png" width="90%">
 </div>
 <br/>
