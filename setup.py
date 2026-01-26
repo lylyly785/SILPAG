@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="SILPAG",
+    version="0.1.0",
+    author="Yan",
+    description="Spatially-informed Identification and Localization of Perturbation-Altered Genes",
+    packages=find_packages(),
+    install_requires=[
+    "anndata>=0.12.7",
+    "anndata2ri>=2.0",
+    "dynamictreecut>=0.1.1",
+    "einops>=0.8.2",
+    "entmax>=1.3",
+    "matplotlib>=3.10.8",
+    "numba>=0.63.1",
+    "numpy>=1.24.1",
+    "opencv-python>=4.12.0.88",
+    "pandas>=3.0.0",
+    "Pillow>=12.1.0",
+    "rpy2>=3.5.11",
+    "scanpy>=1.12",
+    "scikit-learn>=1.8.0", 
+    "scipy>=1.17.0",
+    "seaborn>=0.13.2",
+    "scikit-image",
+    "torch>=2.9.1",
+    "torchvision>=0.24.1",
+    "tqdm>=4.67.1",
+    ],
+    python_requires='>=3.10',
+)
