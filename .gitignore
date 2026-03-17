@@ -1,14 +1,3 @@
 __pycache__/
-*.py[cod]
-*$py.class
-
-build/
-dist/
-*.egg-info/
-
-venv/
-.env
-
-.vscode/
-.idea/
+*.pyc
 .DS_Store

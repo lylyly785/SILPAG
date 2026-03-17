@@ -15,7 +15,7 @@ from entmax import entmax_bisect
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
-from .util import unpad_to_original, sinkhorn
+from .util import unpad_to_original
 
 
     
@@ -647,6 +647,10 @@ class AE_encoder(nn.Module):
 
         pearson = numerator / (denominator + epsilon)
         loss = 1 - pearson.mean()
+
+        # pos_var = pred.var(dim=0)
+        # varloss = torch.exp(-pos_var.mean())
+        # loss = loss + 0.5 * varloss
         return loss
         
     def forward(self, imgs, distr, hist=None):

@@ -15,22 +15,18 @@ from sklearn import metrics
 from sklearn.cluster import KMeans
 from skimage.measure import block_reduce
 import cv2
-# import os
-# import sys
-# import time
 import torch
-# import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
-# from torch.optim.lr_scheduler import CosineAnnealingLR
-# from torchvision import transforms, datasets
+from torch.optim.lr_scheduler import CosineAnnealingLR
+
 import itertools
 from collections import deque
 from entmax import entmax_bisect
 import seaborn as sns
 import matplotlib
-matplotlib.rcParams['font.family'] = 'Arial'
+matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 
 from .util import adjust_learning_rate
 from .util import pad_to_divisible
@@ -133,7 +129,7 @@ def train1epoch_stage2(epoch, model, optimizer, anchorpool, train_loader, hist_d
         train_loss6 += bsz * (vq_loss.sum().item())
         train_loss7 += bsz * (cosine_loss.sum().item())
 
-        total_loss1 = 2 * ranking_loss.sum() + 1 * huber_loss.sum() + 10 * vq_loss.sum() + 5 * cosine_loss.sum()
+        total_loss1 = 5 * ranking_loss.sum() + 1 * huber_loss.sum() + 10 * vq_loss.sum() + 5 * cosine_loss.sum()
         
         # Anchor-gene-Guided Optimal Transport
         anchor_mask = hk_idx == 1
@@ -305,7 +301,7 @@ def train_marker(train_loader, hist_data=None, args=None):
             dataset = train_loader.dataset
             z = get_embedding(model, dataset, hist_data, args)
             # idx, marker_label = findmarker(z, n_neighbors=15, top_n_per_cluster=30, resolution=2)
-            idx, marker_label = findmarker_kmeans(z, top_n_per_cluster=1, n_clusters=50)
+            idx, marker_label = findmarker_kmeans(z, top_n_per_cluster=5, n_clusters=100)
             marker_data = []
             for i in range(args.num_slice):
                 data = dataset.gene_images[i][idx[i]]
@@ -342,9 +338,10 @@ def train_marker(train_loader, hist_data=None, args=None):
                 
 
         H = torch.zeros(len(train_loader.dataset), 1, requires_grad=False, device=args.device) 
+        scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
         # L1, L2 = [], []
         for epoch in tqdm(range(1, args.epochs + 1), desc='Training', unit='epochs'):
-            adjust_learning_rate(epoch, args, optimizer)
+            # adjust_learning_rate(epoch, args, optimizer)
             # hk_num.append(train_loader.dataset.labels.sum())
             if epoch > 1:
                 # Q, d, PI, P0, KAPPA = train1epoch_stage2(epoch, model, optimizer, anchor, train_loader, hist_data, marker_loader, Q, PI, P0, KAPPA, args)
@@ -393,6 +390,7 @@ def train_marker(train_loader, hist_data=None, args=None):
                             train_loader.dataset.labels[down.cpu()] = 0
 
             else: train1epoch_stage2(epoch, model, optimizer, anchor, train_loader, hist_data, marker_loader, Q, PI, P0, KAPPA, args)
+            scheduler.step()
             
         if args.save:
             torch.save(model.state_dict(), f"{args.model_path + '.pkl'}")
