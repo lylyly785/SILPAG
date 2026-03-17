@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Large data files
+SILPAG/data/*.h5ad
+SILPAG/saved_model/*.pkl
