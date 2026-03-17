@@ -52,6 +52,10 @@ pip install -r requirements.txt
 
 See `requirements.txt` for the full list.
 
+## Tutorial
+
+For a step-by-step walkthrough with the hBC demo data, see the full tutorial: [SILPAG Tutorial](https://zipging.github.io/SILPAG_tutorial/)
+
 ## Quick Start
 
 ```python
